@@ -56,7 +56,9 @@ Baseline verified: `npm install` + `npm run type-check:js` both pass clean on No
 
 - **Feature branch:** `feature/multi-video-batch` (never commit feature work to `main`)
 - **Commit style:** `type: description` (e.g., `feat:`, `fix:`, `chore:`, `docs:`)
-- **Feature code location:** TBD after Phase 2 planning (see `PLAN.md`)
+- **Feature code location:**
+  - `src/renderer/contexts/BatchExecutionContext.tsx` — batch orchestration logic
+  - `src/renderer/components/Header/BatchControls.tsx` — batch UI in header
 - **DEVLOG.md:** Updated at the end of every working session (reverse-chronological)
 
 ## Tracking File Maintenance

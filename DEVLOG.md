@@ -4,6 +4,27 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-19 — Phase 3: Implementation
+
+**Done:**
+- Created `src/renderer/contexts/BatchExecutionContext.tsx`: batch orchestration context. Provides folder state, `runBatch()`, `cancelBatch()`, progress, and summary. Uses `optimizeChain` + `toBackendJson` to build chain JSON, then patches Load Video input 0 (file path) and Save Video input 2 (name stem) per video before each `backend.run()` call.
+- Created `src/renderer/components/Header/BatchControls.tsx`: compact header UI with folder picker button, batch run / cancel button with live N/M count, and a completion modal listing any persistent failures.
+- Modified `src/renderer/main.tsx`: added `BatchExecutionProvider` inside `ExecutionProvider`.
+- Modified `src/renderer/components/Header/Header.tsx`: added `BatchControls` next to `ExecutionButtons`.
+
+**Verification so far:**
+- `npm run type-check:js` passes clean.
+- `npx vitest run` — 96/96 tests pass.
+
+**Decisions made:**
+- Used `createContext` / `useContext` from `use-context-selector` to match existing codebase pattern.
+- `cancelBatch()` sets a ref flag; current video finishes before the loop exits (clean shutdown).
+- Snapshot file line-ending changes from running tests on Windows not committed (whitespace only).
+
+**Next:** Phase 4 — manual verification with real test videos.
+
+---
+
 ## 2026-05-19 — Phase 1: Codebase Investigation + Phase 2: Plan
 
 **Done:**

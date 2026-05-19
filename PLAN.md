@@ -1,6 +1,6 @@
 # PLAN.md — Multi-Video Batch Feature
 
-> Status: **PROPOSED — awaiting user approval**
+> Status: **APPROVED + IMPLEMENTED — Phase 4 verification in progress**
 > Branch: `feature/multi-video-batch`
 > Written: 2026-05-19, after Phase 1 investigation
 

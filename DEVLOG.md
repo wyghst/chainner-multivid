@@ -4,6 +4,20 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-19 — End of session
+
+**Current state:** All code committed and pushed. `Load Videos` + `Save Videos` nodes registered correctly after DirectoryInput bug fix.
+
+**What's on the branch (`feature/multi-video-batch`):**
+- `backend/.../video_frames/load_videos.py` — Load Videos generator node (fixed)
+- `backend/.../video_frames/save_videos.py` — Save Videos collector node
+- `run-test.bat` / `run-test.sh` — one-click test launchers
+- `CLAUDE.md`, `DEVLOG.md`, `PLAN.md` — all current
+
+**Next session:** Phase 4 — launch app, confirm both nodes appear under Video Frames, wire up Load Videos → Save Videos with Video Name connected, run with 3+ videos, verify one output file per input video.
+
+---
+
 ## 2026-05-19 — Bug fix: Load Videos node not appearing
 
 **Problem:** `Load Videos` node was silently failing to register — not visible in the node selector on Mac or Windows.

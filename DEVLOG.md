@@ -4,6 +4,22 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-19 — End of session status
+
+**Current state:** Phases 0–3 complete and pushed. Awaiting Phase 4 manual testing.
+
+**What's on the branch (`feature/multi-video-batch`):**
+- `run-test.bat` / `run-test.sh` — one-click test launchers (Windows / Mac)
+- `src/renderer/contexts/BatchExecutionContext.tsx` — batch orchestration
+- `src/renderer/components/Header/BatchControls.tsx` — batch UI in header
+- `CLAUDE.md`, `DEVLOG.md`, `PLAN.md` — all current
+
+**Uncommitted:** Only CRLF/LF snapshot normalization from running tests on Windows — not committed (no content change).
+
+**Next session:** Run Phase 4 verification (open app via `run-test.bat`, test batch folder run with 3+ videos, test error/retry/summary flow, confirm single-video regression is clean), then Phase 5 finalize.
+
+---
+
 ## 2026-05-19 — Test launcher scripts
 
 **Done:**

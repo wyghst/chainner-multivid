@@ -65,6 +65,7 @@ Baseline verified: `npm install` + `npm run type-check:js` both pass clean on No
 - **Feature code location:**
   - `backend/src/packages/chaiNNer_standard/image/video_frames/load_videos.py` — Load Videos generator node
   - `backend/src/packages/chaiNNer_standard/image/video_frames/save_videos.py` — Save Videos collector node
+  - `backend/src/packages/chaiNNer_standard/image_dimension/resize/resize_to_side.py` — added Force Even Dimensions option (input id=5)
 - **DEVLOG.md:** Updated at the end of every working session (reverse-chronological)
 
 ## Tracking File Maintenance

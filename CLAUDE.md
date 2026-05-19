@@ -22,17 +22,24 @@ chaiNNer enforces that **only one iterator node may exist per chain lineage**. T
 # Install dependencies (requires Node.js >= 18, npm >= 7)
 npm install
 
+# TypeScript type check (fast baseline verification)
+npm run type-check:js
+
 # Run in dev mode (Electron)
 npm run dev
 
 # Build distributable
 npm run make
 
-# Run tests
-npm test
+# Run JS tests
+npm run test:js
+
+# Run Python tests
+npm run test:py
 ```
 
-Python backend is managed automatically by chaiNNer's integrated Python support. No manual Python setup needed for development builds.
+Python backend is managed automatically by chaiNNer's integrated Python support.
+Baseline verified: `npm install` + `npm run type-check:js` both pass clean on Node.js v25.8.1.
 
 ---
 

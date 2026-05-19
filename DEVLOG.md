@@ -4,6 +4,20 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-19 — End of session (node-based pivot complete)
+
+**Current state:** `load_videos.py` + `save_videos.py` implemented and pushed. Frontend header approach fully reverted. TypeScript type-check clean. Python nodes awaiting Phase 4 manual test.
+
+**What's on the branch (`feature/multi-video-batch`):**
+- `backend/.../video_frames/load_videos.py` — Load Videos generator node
+- `backend/.../video_frames/save_videos.py` — Save Videos collector node
+- `run-test.bat` / `run-test.sh` — one-click test launchers
+- `CLAUDE.md`, `DEVLOG.md`, `PLAN.md` — all current
+
+**Next session:** Launch app via `run-test.bat`, add Load Videos + Save Videos to a chain, connect Video Name output to Video Name input, run with 3+ test videos, confirm one output file per input video.
+
+---
+
 ## 2026-05-19 — Phase 3 Revision: Node-based batch approach
 
 **Done:**

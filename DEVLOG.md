@@ -4,6 +4,23 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-19 — Audio passthrough + Directory output
+
+**Done:**
+- **Load Videos**: added Audio Stream (iterated output 5, per-video ffmpeg stream), Total Videos moved to output 6, Directory added as output 7 (non-iterated, the scanned folder path).
+- **Save Videos**: added Audio Stream (iterated input id=15, optional), Audio Settings (non-iterated id=10), wired both through `_open_writer` to the FFmpeg Writer. GIF format forces audio=None. Updated `IteratorInputInfo` to `[0, 1, 14, 15]` and `on_iterate` unpacks a 4-tuple `(frame, video_name, fps, audio)`.
+
+**How to wire the new outputs:**
+- `Load Videos: Audio Stream` → `Save Videos: Audio Stream` — audio carried through per video
+- `Load Videos: Directory` → `Save Videos: Directory` — outputs land in same folder as inputs
+- `Load Videos: FPS` → `Save Videos: FPS` — native FPS per video
+
+**Deferred:** Auto frame size with even horizontal pixels — likely needs a new node; user chose to hold off.
+
+**Next:** Phase 4 — full end-to-end test with all connections wired.
+
+---
+
 ## 2026-05-19 — End of session
 
 **Current state:** All code committed and pushed. `Load Videos` + `Save Videos` nodes registered correctly after DirectoryInput bug fix.

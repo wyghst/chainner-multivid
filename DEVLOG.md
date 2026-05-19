@@ -4,6 +4,19 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-19 — Force Even Dimensions option on Resize To Side
+
+**Done:**
+- Added `BoolInput("Force Even Dimensions", default=False)` to `resize_to_side.py` (input id=5).
+- Updated navi `image_type` expression to apply `round(d / 2) * 2` when `Input5` is true.
+- Updated `resize_to_side_node` function signature with `force_even: bool` parameter.
+- Added even-snap logic in body: `out_w = max(out_w - out_w % 2, 2)` and same for height.
+- When enabled, both width and height are snapped **down** to the nearest even pixel (minimum 2), satisfying H.264/H.265 libx265 requirements.
+
+**Next:** Phase 4 end-to-end test with all connections wired.
+
+---
+
 ## 2026-05-19 — Audio passthrough + Directory output
 
 **Done:**

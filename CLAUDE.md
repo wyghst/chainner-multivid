@@ -59,6 +59,21 @@ Baseline verified: `npm install` + `npm run type-check:js` both pass clean on No
 - **Feature code location:** TBD after Phase 2 planning (see `PLAN.md`)
 - **DEVLOG.md:** Updated at the end of every working session (reverse-chronological)
 
+## Tracking File Maintenance
+
+After every meaningful chunk of work — completing a phase, making a design decision, hitting a blocker, or finishing a session — do all three of the following before stopping:
+
+1. **Update `DEVLOG.md`** with what was done, decisions made, problems hit, and next steps.
+2. **Update `CLAUDE.md`** if any architectural facts, build commands, conventions, or the do-not-touch list changed.
+3. **Commit and push** all three tracking files (and any code changes) to `origin`:
+   ```bash
+   git add CLAUDE.md DEVLOG.md PLAN.md
+   git commit -m "docs: update tracking files — <brief reason>"
+   git push origin feature/multi-video-batch
+   ```
+
+Never end a session with uncommitted or unpushed tracking file changes.
+
 ---
 
 ## Syncing Upstream

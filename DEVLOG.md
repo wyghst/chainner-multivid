@@ -4,6 +4,22 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-19 — Phase 3 Revision: Node-based batch approach
+
+**Done:**
+- **Reverted** frontend header approach: deleted `BatchExecutionContext.tsx`, `BatchControls.tsx`; reverted `main.tsx` and `Header.tsx` to pre-batch state. TypeScript type check passes clean.
+- **Created `backend/src/packages/chaiNNer_standard/image/video_frames/load_videos.py`**: `Load Videos` generator node. Takes a DirectoryInput, scans for video files (`.mp4 .mkv .avi .mov .webm .gif .m4v .wmv`), iterates all frames from all videos as one flat sequence. Iterated outputs: Frame, FrameIndex, VideoIndex, VideoName, FPS. Non-iterated: TotalVideos. Auto-discovered by chaiNNer's node loader.
+- **Created `backend/src/packages/chaiNNer_standard/image/video_frames/save_videos.py`**: `Save Videos` collector node. Iterated inputs: Frame + VideoName. Non-iterated: Directory, FPS, format/encoder settings (same options as Save Video, reusing Writer/enums via import). Detects VideoName change → closes previous FFmpeg writer, opens a new one. Returns count of videos saved.
+- Updated CLAUDE.md, PLAN.md.
+
+**Why the change:** User requested nodes (like "Load Images" for batch images) rather than a header toolbar. Node-based approach is cleaner: the chain topology itself expresses the batch intent, no UI-layer orchestration needed.
+
+**Verification:** `npm run type-check:js` passes clean. Python nodes untested (need app launch for Phase 4).
+
+**Next:** Phase 4 — launch app via `run-test.bat`, place Load Videos + Save Videos nodes in a chain, run batch with 3+ videos, confirm separate output files.
+
+---
+
 ## 2026-05-19 — Pull request opened
 
 **Done:**

@@ -5,7 +5,6 @@ import { NodeDocumentationButton } from '../NodeDocumentation/NodeDocumentationM
 import { SettingsButton } from '../SettingsModal';
 import { SystemStats } from '../SystemStats';
 import { AppInfo } from './AppInfo';
-import { BatchControls } from './BatchControls';
 import { ExecutionButtons } from './ExecutionButtons';
 import { KoFiButton } from './KoFiButton';
 
@@ -26,10 +25,7 @@ export const Header = memo(() => {
                 <AppInfo />
             </Box>
             <Center flexGrow="1">
-                <HStack spacing={2}>
-                    <ExecutionButtons />
-                    <BatchControls />
-                </HStack>
+                <ExecutionButtons />
             </Center>
             <HStack>
                 <SystemStats />

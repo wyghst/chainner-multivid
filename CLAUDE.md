@@ -12,7 +12,7 @@ Fork of [chaiNNer-org/chaiNNer](https://github.com/chaiNNer-org/chaiNNer) under 
 
 chaiNNer enforces that **only one iterator node may exist per chain lineage**. The existing `Load Video` node is already an iterator (over frames). Nesting a "folder of videos" iterator inside it would create two iterators in one lineage — which chaiNNer explicitly prohibits.
 
-**Chosen design:** The orchestration layer re-runs the entire chain once per video, swapping the input video path each pass. This keeps exactly one iterator per chain run. The feature lives in the **input/orchestration layer only** — not in frame-iteration logic, not in core nodes.
+**Chosen design (revised):** Two new backend nodes — `Load Videos` (generator) and `Save Videos` (collector) — added to the `video_frames` package. `Load Videos` takes a directory, scans for video files, and yields every frame from every video sequentially as a single flat stream. This satisfies the single-iterator rule (one generator per chain run). `Save Videos` takes the frame and video name as iterated inputs; each time the video name changes it closes the previous FFmpeg writer and opens a new one, producing one output file per source video.
 
 ---
 
@@ -63,8 +63,8 @@ Baseline verified: `npm install` + `npm run type-check:js` both pass clean on No
 - **Feature branch:** `feature/multi-video-batch` (never commit feature work to `main`)
 - **Commit style:** `type: description` (e.g., `feat:`, `fix:`, `chore:`, `docs:`)
 - **Feature code location:**
-  - `src/renderer/contexts/BatchExecutionContext.tsx` — batch orchestration logic
-  - `src/renderer/components/Header/BatchControls.tsx` — batch UI in header
+  - `backend/src/packages/chaiNNer_standard/image/video_frames/load_videos.py` — Load Videos generator node
+  - `backend/src/packages/chaiNNer_standard/image/video_frames/save_videos.py` — Save Videos collector node
 - **DEVLOG.md:** Updated at the end of every working session (reverse-chronological)
 
 ## Tracking File Maintenance

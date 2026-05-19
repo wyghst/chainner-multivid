@@ -14,7 +14,6 @@ import { NodeSelector } from './components/NodeSelectorPanel/NodeSelectorPanel';
 import { ReactFlowBox } from './components/ReactFlowBox';
 import { AlertBoxContext, AlertType } from './contexts/AlertBoxContext';
 import { BackendContext } from './contexts/BackendContext';
-import { BatchExecutionProvider } from './contexts/BatchExecutionContext';
 import { DependencyProvider } from './contexts/DependencyContext';
 import { ExecutionProvider } from './contexts/ExecutionContext';
 import { GlobalProvider } from './contexts/GlobalNodeState';
@@ -143,7 +142,6 @@ export const Main = memo(() => {
             <GlobalProvider reactFlowWrapper={reactFlowWrapper}>
                 <NodeDocumentationProvider>
                     <ExecutionProvider>
-                        <BatchExecutionProvider>
                         <DependencyProvider>
                             <HistoryProvider>
                                 <VStack
@@ -168,7 +166,6 @@ export const Main = memo(() => {
                                 </VStack>
                             </HistoryProvider>
                         </DependencyProvider>
-                        </BatchExecutionProvider>
                     </ExecutionProvider>
                 </NodeDocumentationProvider>
             </GlobalProvider>

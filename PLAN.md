@@ -1,8 +1,57 @@
 # PLAN.md — Multi-Video Batch Feature
 
-> Status: **APPROVED + IMPLEMENTED — Phase 4 verification in progress**
+> Status: **SUPERSEDED — see Phase 3 Revision below**
 > Branch: `feature/multi-video-batch`
 > Written: 2026-05-19, after Phase 1 investigation
+
+---
+
+## Phase 3 Revision — Node-Based Approach (implemented 2026-05-19)
+
+The original frontend-orchestration approach (header controls, BatchExecutionContext) was scrapped in favour of two new backend nodes at the user's request.
+
+### New nodes
+
+| File | Node | Kind | Purpose |
+|------|------|------|---------|
+| `backend/src/packages/chaiNNer_standard/image/video_frames/load_videos.py` | **Load Videos** | generator | Scans a folder for videos, iterates all frames from all videos sequentially as one flat stream |
+| `backend/src/packages/chaiNNer_standard/image/video_frames/save_videos.py` | **Save Videos** | collector | Receives (Frame, VideoName) per iteration; opens a new FFmpeg writer when VideoName changes |
+
+### Load Videos outputs
+
+| Index | Name | Type | Iterated? |
+|-------|------|------|-----------|
+| 0 | Frame | Image | ✓ |
+| 1 | Frame Index | Number | ✓ |
+| 2 | Video Index | Number | ✓ |
+| 3 | Video Name | Text | ✓ |
+| 4 | FPS | Number | ✓ |
+| 5 | Total Videos | Number | — |
+
+### Save Videos inputs
+
+| Index | Name | Type | Iterated? |
+|-------|------|------|-----------|
+| 0 | Frame | Image | ✓ |
+| 1 | Video Name | Text | ✓ |
+| 2 | Directory | Directory | — |
+| 3 | FPS | Number | — |
+| 4+ | Format/encoder settings | — | — |
+
+### How they satisfy the single-iterator rule
+
+- One `Load Videos` node = one generator = one iterator per chain run.
+- `Save Videos` is a collector, not a generator — it never creates a second iterator.
+- The existing `Load Video` / `Save Video` single-file nodes are untouched.
+
+### Reverted files
+
+- `src/renderer/contexts/BatchExecutionContext.tsx` — deleted
+- `src/renderer/components/Header/BatchControls.tsx` — deleted
+- `src/renderer/main.tsx` — reverted (BatchExecutionProvider removed)
+- `src/renderer/components/Header/Header.tsx` — reverted (BatchControls removed)
+
+---
 
 ---
 

@@ -28,7 +28,7 @@ VIDEO_EXTENSIONS = {".mp4", ".mkv", ".avi", ".mov", ".webm", ".gif", ".m4v", ".w
     ],
     icon="MdVideoLibrary",
     inputs=[
-        DirectoryInput(primary_input=True),
+        DirectoryInput(),
         BoolInput("Use limit", default=False).with_id(1),
         if_group(Condition.bool(1, True))(
             NumberInput("Limit per video", default=10, min=1)

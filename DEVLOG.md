@@ -4,6 +4,15 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-19 — Pull request opened
+
+**Done:**
+- Opened PR #1: https://github.com/wyghst/chainner-multivid/pull/1
+- All feature work is visible on GitHub — navigate to the PR or switch to the `feature/multi-video-batch` branch to browse the diff.
+- Note: GitHub defaults to showing `main`; the feature branch is separate by design until Phase 4 testing is complete.
+
+---
+
 ## 2026-05-19 — End of session status
 
 **Current state:** Phases 0–3 complete and pushed. Awaiting Phase 4 manual testing.

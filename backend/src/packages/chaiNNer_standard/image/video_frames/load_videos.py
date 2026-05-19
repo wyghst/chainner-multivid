@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -9,7 +10,13 @@ from nodes.groups import Condition, if_group
 from nodes.impl.ffmpeg import FFMpegEnv
 from nodes.impl.video import VideoLoader
 from nodes.properties.inputs import BoolInput, DirectoryInput, NumberInput
-from nodes.properties.outputs import ImageOutput, NumberOutput, TextOutput
+from nodes.properties.outputs import (
+    AudioStreamOutput,
+    DirectoryOutput,
+    ImageOutput,
+    NumberOutput,
+    TextOutput,
+)
 from nodes.utils.utils import split_file_path
 
 from .. import video_frames_group
@@ -22,8 +29,9 @@ VIDEO_EXTENSIONS = {".mp4", ".mkv", ".avi", ".mov", ".webm", ".gif", ".m4v", ".w
     name="Load Videos",
     description=[
         "Iterate over all frames in every video inside a folder.",
-        "Yields each frame along with its frame index, video index, video name, and FPS.",
-        "Connect Video Name to a Save Videos node so each input video produces a separate output file.",
+        "Yields each frame along with its frame index, video index, video name, FPS, and audio stream.",
+        "Connect Video Name to Save Videos so each input video produces a separate output file.",
+        "Connect Audio Stream to Save Videos to carry audio through to each output video.",
         "Uses FFMPEG to read video files.",
     ],
     icon="MdVideoLibrary",
@@ -46,12 +54,16 @@ VIDEO_EXTENSIONS = {".mp4", ".mkv", ".avi", ".mov", ".webm", ".gif", ".m4v", ".w
             "Counter that increments by 1 for each new video (starts at 0)."
         ),
         TextOutput("Video Name").with_docs(
-            "Filename stem of the current video (no extension). Connect this to Save Videos so each input produces a separate output file."
+            "Filename stem of the current video (no extension). Connect to Save Videos so each input produces a separate output file."
         ),
         NumberOutput("FPS", output_type="0.."),
+        AudioStreamOutput().suggest(),
         NumberOutput("Total Videos", output_type="uint"),
+        DirectoryOutput("Directory").with_docs(
+            "The folder that was scanned. Connect to Save Videos' Directory input to write outputs to the same folder."
+        ),
     ],
-    iterator_outputs=IteratorOutputInfo(outputs=[0, 1, 2, 3, 4]),
+    iterator_outputs=IteratorOutputInfo(outputs=[0, 1, 2, 3, 4, 5]),
     node_context=True,
     side_effects=True,
     kind="generator",
@@ -61,7 +73,7 @@ def load_videos_node(
     directory: Path,
     use_limit: bool,
     limit: int,
-) -> tuple[Generator[tuple[np.ndarray, int, int, str, float]], int]:
+) -> tuple[Generator[tuple[np.ndarray, int, int, str, float, Any]], int, Path]:
     paths = sorted(
         p
         for p in directory.iterdir()
@@ -87,12 +99,14 @@ def load_videos_node(
             loader = VideoLoader(path, ffmpeg_env)
             video_name = split_file_path(path)[1]
             fps = loader.metadata.fps
+            audio_stream = loader.get_audio_stream()
             for frame_index, frame in enumerate(loader.stream_frames()):
-                yield frame, frame_index, video_index, video_name, fps
+                yield frame, frame_index, video_index, video_name, fps, audio_stream
                 if use_limit and frame_index + 1 >= limit:
                     break
 
     return (
         Generator.from_iter(supplier=iterator, expected_length=total_frames),
         len(paths),
+        directory,
     )

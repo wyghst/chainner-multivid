@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -8,6 +9,7 @@ from api import Collector, IteratorInputInfo, KeyInfo, NodeContext
 from nodes.groups import Condition, if_enum_group, if_group
 from nodes.impl.ffmpeg import FFMpegEnv
 from nodes.properties.inputs import (
+    AudioStreamInput,
     DirectoryInput,
     EnumInput,
     ImageInput,
@@ -44,6 +46,8 @@ def _open_writer(
     quality: int,
     fps: float,
     ffmpeg_env: FFMpegEnv,
+    audio: Any,
+    audio_settings: AudioSettings,
 ) -> Writer:
     if simplicity == Simplicity.SIMPLE:
         container, encoder, video_preset, crf = get_simple_format(
@@ -87,12 +91,16 @@ def _open_writer(
             else:
                 global_params.append(f"-{parameter}")
 
+    # GIF has no audio
+    if container == VideoFormat.GIF:
+        audio = None
+
     return Writer(
         container=container,
         encoder=encoder,
         fps=fps,
-        audio=None,
-        audio_settings=AudioSettings.AUTO,
+        audio=audio,
+        audio_settings=audio_settings,
         save_path=str(save_path),
         output_params=output_params,
         global_params=global_params,
@@ -106,6 +114,7 @@ def _open_writer(
     description=[
         "Writes frames from a Load Videos iterator into one output file per source video.",
         "Connect Video Name from Load Videos so the node detects when a new video starts and opens a new output file.",
+        "Connect Audio Stream from Load Videos to carry audio through to each output video.",
         "Uses FFMPEG to write video files.",
     ],
     icon="MdVideoCameraBack",
@@ -187,8 +196,26 @@ def _open_writer(
                 SliderInput("Quality", min=0, max=100, default=75).with_id(18),
             ),
         ),
+        if_group(~Condition.enum(4, VideoFormat.GIF))(
+            AudioStreamInput().make_optional().with_id(15).suggest(),
+            if_group(Condition.type(15, "AudioStream"))(
+                EnumInput(
+                    AudioSettings,
+                    label="Audio",
+                    default=AudioSettings.AUTO,
+                    conditions={
+                        AudioSettings.COPY: ~Condition.enum(4, VideoFormat.WEBM)
+                    },
+                    label_style="inline",
+                )
+                .with_docs(
+                    "The first audio stream can be discarded, copied or transcoded at 320 kb/s."
+                )
+                .with_id(10),
+            ),
+        ),
     ],
-    iterator_inputs=IteratorInputInfo(inputs=[0, 1, 14]),
+    iterator_inputs=IteratorInputInfo(inputs=[0, 1, 14, 15]),
     outputs=[
         NumberOutput("Videos Saved", output_type="uint"),
     ],
@@ -211,16 +238,18 @@ def save_videos_node(
     additional_parameters: str | None,
     simple_video_format: SimpleVideoFormat,
     quality: int,
-) -> Collector[tuple[np.ndarray, str, float], int]:
+    _audio: None,
+    audio_settings: AudioSettings,
+) -> Collector[tuple[np.ndarray, str, float, Any], int]:
     ffmpeg_env = FFMpegEnv.get_integrated(node_context.storage_dir)
     writer: Writer | None = None
     current_name: str | None = None
     videos_saved = 0
 
-    def on_iterate(inputs: tuple[np.ndarray, str, float]):
+    def on_iterate(inputs: tuple[np.ndarray, str, float, Any]):
         nonlocal writer, current_name, videos_saved
 
-        frame, video_name, fps = inputs
+        frame, video_name, fps, audio = inputs
 
         if video_name != current_name:
             if writer is not None:
@@ -240,6 +269,8 @@ def save_videos_node(
                 quality=quality,
                 fps=fps,
                 ffmpeg_env=ffmpeg_env,
+                audio=audio,
+                audio_settings=audio_settings,
             )
 
         assert writer is not None

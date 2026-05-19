@@ -4,6 +4,18 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-19 — Bug fix: Load Videos node not appearing
+
+**Problem:** `Load Videos` node was silently failing to register — not visible in the node selector on Mac or Windows.
+
+**Root cause:** `load_videos.py` called `DirectoryInput(primary_input=True)`. `DirectoryInput.__init__` does not accept `primary_input` (only `FileInput` subclasses do). This raised `TypeError` at import time, caught silently by `load_nodes()`, so the node never registered.
+
+**Fix:** Changed to `DirectoryInput()` (no argument). One-line diff.
+
+**Next:** Re-run the app and confirm both Load Videos and Save Videos nodes appear under Video Frames.
+
+---
+
 ## 2026-05-19 — End of session (node-based pivot complete)
 
 **Current state:** `load_videos.py` + `save_videos.py` implemented and pushed. Frontend header approach fully reverted. TypeScript type-check clean. Python nodes awaiting Phase 4 manual test.

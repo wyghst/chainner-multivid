@@ -188,7 +188,7 @@ def _open_writer(
             ),
         ),
     ],
-    iterator_inputs=IteratorInputInfo(inputs=[0, 1]),
+    iterator_inputs=IteratorInputInfo(inputs=[0, 1, 14]),
     outputs=[
         NumberOutput("Videos Saved", output_type="uint"),
     ],
@@ -202,7 +202,7 @@ def save_videos_node(
     _frame: None,
     _video_name: None,
     save_dir: Path,
-    fps: float,
+    _fps: None,
     simplicity: Simplicity,
     container: VideoFormat,
     encoder: VideoEncoder,
@@ -211,16 +211,16 @@ def save_videos_node(
     additional_parameters: str | None,
     simple_video_format: SimpleVideoFormat,
     quality: int,
-) -> Collector[tuple[np.ndarray, str], int]:
+) -> Collector[tuple[np.ndarray, str, float], int]:
     ffmpeg_env = FFMpegEnv.get_integrated(node_context.storage_dir)
     writer: Writer | None = None
     current_name: str | None = None
     videos_saved = 0
 
-    def on_iterate(inputs: tuple[np.ndarray, str]):
+    def on_iterate(inputs: tuple[np.ndarray, str, float]):
         nonlocal writer, current_name, videos_saved
 
-        frame, video_name = inputs
+        frame, video_name, fps = inputs
 
         if video_name != current_name:
             if writer is not None:

@@ -4,6 +4,17 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-19 — Test launcher scripts
+
+**Done:**
+- Created `run-test.bat` (Windows) and `run-test.sh` (Mac/Linux).
+- Both scripts: check for Node.js, run `npm install` if `node_modules` is missing, then launch `npm start` (Electron with integrated Python backend — no manual Python setup required).
+- Updated `CLAUDE.md` with launch instructions.
+
+**Next:** Manual Phase 4 verification using these scripts.
+
+---
+
 ## 2026-05-19 — Phase 3: Implementation
 
 **Done:**

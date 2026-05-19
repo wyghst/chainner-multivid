@@ -25,10 +25,16 @@ npm install
 # TypeScript type check (fast baseline verification)
 npm run type-check:js
 
-# Run in dev mode (Electron)
+# Launch the app for manual testing (uses integrated Python backend)
+npm start                # any platform — run from repo root
+# OR use the convenience scripts:
+./run-test.sh            # Mac / Linux
+run-test.bat             # Windows (double-click or run in cmd)
+
+# Run in dev mode with hot-reload (requires Python + nodemon)
 npm run dev
 
-# Build distributable
+# Build distributable installer
 npm run make
 
 # Run JS tests
@@ -38,7 +44,7 @@ npm run test:js
 npm run test:py
 ```
 
-Python backend is managed automatically by chaiNNer's integrated Python support.
+Python backend is managed automatically by chaiNNer's integrated Python support — no manual Python setup needed for `npm start`.
 Baseline verified: `npm install` + `npm run type-check:js` both pass clean on Node.js v25.8.1.
 
 ---

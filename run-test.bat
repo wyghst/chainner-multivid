@@ -31,3 +31,10 @@ echo ^(The app window will open. Close it or press Ctrl+C here to stop.^)
 echo.
 
 npm start
+if errorlevel 1 (
+    echo.
+    echo ERROR: npm start failed. See output above.
+    pause
+    exit /b 1
+)
+pause

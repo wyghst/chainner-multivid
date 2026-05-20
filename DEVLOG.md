@@ -4,6 +4,12 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-20 — v0.25.5-multivid: GitHub Actions Node.js 24 upgrade
+
+Updated all 8 workflow files (release, release-test, make, lint-backend, lint-frontend, test-backend, test-frontend, wiki) from `actions/checkout@v4`, `actions/setup-node@v4`, `actions/setup-python@v4/v5` to v6 across the board. GitHub is forcing Node.js 20 actions to Node.js 24 on June 2nd, 2026 — this update resolves the deprecation warnings before the deadline. Bumped to 0.25.5-multivid.
+
+---
+
 ## 2026-05-20 — v0.25.4-multivid released + forge draft fix
 
 Tagged `v0.25.4-multivid` and pushed to origin. All three platform jobs (macOS, Linux, Windows) completed successfully with all 8 assets uploaded.

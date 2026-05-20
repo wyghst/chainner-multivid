@@ -4,6 +4,37 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-19 — Vulnerability audit + compatibility fixes (branch: update/dependencies)
+
+**App status:** working on Windows and Mac after the fixes below.
+
+**Compatibility issues resolved during testing:**
+- `patch-package` was erroring on every install because the patch targeted `@electron-forge/plugin-vite@7.4.0/dist/util/package.js` — that file no longer exists in 7.11.1. Patch deleted.
+- `rregex@1.11.0` removed the `./lib/rregex.wasm` and `./lib/web` subpath exports that `src/common/rust-regex.ts` imports. Pinned back to `1.10.11` (exact, no `^`).
+- `@chakra-ui/react@2.10.9` no longer installs `@chakra-ui/layout`, `@chakra-ui/image`, `@chakra-ui/checkbox`, `@chakra-ui/table`, `@chakra-ui/system` as transitive deps. `chakra-ui-markdown-renderer@4.1.0` imports them directly so they are now listed explicitly in `package.json`.
+- `run-test.bat`: added `git pull` step, `call` prefix on all npm commands (missing `call` causes the cmd window to silently exit when npm finishes on Windows), `--no-audit` flag, and error pausing.
+
+**npm audit — 47 vulnerabilities (6 low, 10 moderate, 31 high):**
+All require breaking changes to fix — none were resolved by `npm audit fix`. The original upstream chaiNNer repo carries the same vulnerabilities.
+
+| Group | Severity | Fix needed | Status |
+|-------|----------|-----------|--------|
+| Electron 25.x CVEs (18 issues) | High | Electron 42 | Deferred — dedicated upgrade effort |
+| `@electron-forge` chain | Mixed | Forge v8 (alpha) | Deferred — pre-release |
+| `@octokit` ReDoS | Moderate | `@octokit/rest` v22 | Deferred — publish-only, not runtime |
+| `esbuild` dev server | Moderate | esbuild update | Dev-only, no production impact |
+| `tmp` via inquirer | Low | Would downgrade forge | Skip |
+
+Electron CVEs are the most notable but require a targeted Electron upgrade as a separate branch/effort. For a local desktop tool the practical attack surface is narrow.
+
+**Dart Sass legacy-js-api warnings:** cosmetic, emitted by Vite's Sass integration. No action needed until Dart Sass 2.0 is released.
+
+**Known TypeScript errors (8):** surfaced by TypeScript 5.9 being stricter than 5.0. All in upstream files, none in our feature code. To fix before merging to main.
+
+**Next:** Fix the 8 TS type errors, then merge `update/dependencies` → `main`.
+
+---
+
 ## 2026-05-19 — Dependency updates (branch: update/dependencies)
 
 **Approach:** patch/minor bumps only. Major version jumps skipped (React 19, Chakra 3, Electron 42, uuid 14, prettier 3, stylelint 17, use-context-selector 2, etc.) — each would require targeted code changes and testing.

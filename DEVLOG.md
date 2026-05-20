@@ -4,6 +4,46 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-19 — Dependency updates (branch: update/dependencies)
+
+**Approach:** patch/minor bumps only. Major version jumps skipped (React 19, Chakra 3, Electron 42, uuid 14, prettier 3, stylelint 17, use-context-selector 2, etc.) — each would require targeted code changes and testing.
+
+**npm packages updated:**
+- `electron` 25.8.4 → 25.9.8 (within v25, via `npm update`)
+- `@electron-forge/*` 7.4.0 → 7.11.1 (all packages, manually — were pinned)
+- `typescript` 5.0.4 → 5.9.3 (latest v5)
+- `vite` 5.4.6 → 5.4.21
+- `vitest` 1.4.0 → 1.6.1
+- `react` / `react-dom` 18.1.0 → 18.3.1 (stayed in v18)
+- `@chakra-ui/react` 2.8.2 → 2.10.9 (stayed in v2)
+- `@emotion/react` / `@emotion/styled` → latest v11
+- `@types/react` / `@types/react-dom` → latest v18
+- `use-context-selector` 1.4.0 → 1.4.4
+- All other patch/minor deps via `npm update --legacy-peer-deps`
+
+**GitHub Actions updated:**
+- `actions/checkout@v3` → `actions/checkout@v4` (all 8 workflow files)
+- `actions/setup-node@v3` → `actions/setup-node@v4` (all applicable files)
+
+**Peer dependency notes:**
+- `eslint-plugin-prefer-arrow-functions` pinned to `3.1.4` (v3.9.1 requires eslint 9; project stays on eslint 8)
+- `--legacy-peer-deps` used throughout because `use-context-selector@1.4.4` pulls in a `react-native` optional peer that wants `@types/react@^19`
+
+**Python backend packages:** left as-is. chaiNNer uses its own package installer; versions are pinned by the upstream team for inter-package compatibility. PyTorch is already at 2.7.0 (current). Updating these without testing the ML pipeline is too risky.
+
+**Known type errors after update (8 total — all in upstream files, not our code):**
+TypeScript 5.9 is stricter than 5.0 and caught pre-existing issues:
+- `src/main/arguments.ts` (4 errors) — `unknown` type narrowing now required
+- `src/main/squirrel.ts` (1 error) — function arity changed in a dependency
+- `src/renderer/components/node/NodeInputs.tsx` (1 error) — `memo` type tightened in `@types/react@18.3`
+- `src/renderer/components/NodeDocumentation/NodeDocs.tsx` (2 errors) — `InputId`/`OutputId` union narrowing
+
+These need to be fixed before merging to main. Diagnose per-error during testing.
+
+**Next:** Test the app, fix the 8 type errors, then merge `update/dependencies` → `main`.
+
+---
+
 ## 2026-05-19 — Release v0.25.2-multivid
 
 **Done:**

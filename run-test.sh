@@ -12,12 +12,15 @@ if ! command -v node &>/dev/null; then
 fi
 echo "Node.js $(node --version) found."
 
-# Install dependencies if needed
-if [ ! -d "node_modules" ]; then
-    echo ""
-    echo "node_modules not found — running npm install..."
-    npm install
-fi
+# Pull latest from git
+echo ""
+echo "Pulling latest changes..."
+git pull origin update/dependencies || echo "WARNING: git pull failed. Continuing with local files."
+
+# Install / sync dependencies
+echo ""
+echo "Syncing dependencies..."
+npm install --legacy-peer-deps
 
 echo ""
 echo "Starting chainner-multivid..."

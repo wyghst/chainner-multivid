@@ -8,7 +8,7 @@ import { GroupElement } from '../groups/Group';
 import { InputItemRenderer } from '../groups/props';
 import { SchemaInput } from '../inputs/SchemaInput';
 
-const ItemRenderer: InputItemRenderer = memo(({ item, nodeState }) => {
+const ItemRenderer = memo(({ item, nodeState }: Parameters<InputItemRenderer>[0]) => {
     if (item.kind === 'group') {
         const { group } = item;
         return (
@@ -27,7 +27,7 @@ const ItemRenderer: InputItemRenderer = memo(({ item, nodeState }) => {
             nodeState={nodeState}
         />
     );
-});
+}) as unknown as InputItemRenderer;
 
 interface NodeInputsProps {
     nodeState: NodeState;

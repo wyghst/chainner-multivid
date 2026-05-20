@@ -6,6 +6,7 @@ import numpy as np
 
 from nodes.impl.resize import ResizeFilter, resize
 from nodes.properties.inputs import (
+    BoolInput,
     EnumInput,
     ImageInput,
     NumberInput,
@@ -102,6 +103,10 @@ def resize_to_side_conditional(
             },
         ).with_id(4),
         ResizeFilterInput().with_id(3),
+        BoolInput("Force Even Dimensions", default=False).with_docs(
+            "Snap the output width and height down to the nearest even pixel count."
+            " Required for H.264/H.265 encoding, which rejects odd-pixel frames."
+        ),
     ],
     outputs=[
         ImageOutput(
@@ -151,9 +156,11 @@ def resize_to_side_conditional(
                     },
                 };
 
+                let forceEven = Input5;
+
                 Image {
-                    width: outSize.width,
-                    height: outSize.height,
+                    width: if forceEven { max(round(outSize.width / 2) * 2, 2) } else { outSize.width },
+                    height: if forceEven { max(round(outSize.height / 2) * 2, 2) } else { outSize.height },
                     channels: Input0.channels
                 }
                 """,
@@ -167,8 +174,11 @@ def resize_to_side_node(
     side: SideSelection,
     condition: ResizeCondition,
     filter: ResizeFilter,
+    force_even: bool,
 ) -> np.ndarray:
     h, w, _ = get_h_w_c(img)
-    out_dims = resize_to_side_conditional(w, h, target, side, condition)
-
-    return resize(img, out_dims, filter)
+    out_w, out_h = resize_to_side_conditional(w, h, target, side, condition)
+    if force_even:
+        out_w = max(out_w - out_w % 2, 2)
+        out_h = max(out_h - out_h % 2, 2)
+    return resize(img, (out_w, out_h), filter)

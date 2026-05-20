@@ -34,7 +34,7 @@ jobs:
               uses: actions/setup-python@v5
               with:
                 python-version: 3.12
-            - run: npm ci
+            - run: npm ci --legacy-peer-deps
             - name: Install necessary FlatPak tools
               if: ${{ matrix.os == 'ubuntu-latest' }}
               run: |
@@ -62,7 +62,7 @@ jobs:
             #       APPLE_SIGNING_ID: ${{ secrets.APPLE_SIGNING_ID }}
               shell: bash
               run: |
-                  npm ci
+                  npm ci --legacy-peer-deps
                   if [[ "${{ matrix.os }}" != "macos-15" ]]; then
                       npm run make -- --no-sign
                   else

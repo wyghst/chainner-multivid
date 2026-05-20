@@ -17,7 +17,9 @@ Reverse-chronological session log. Most recent entry first.
 - `run-test.bat` now auto-pulls, installs with `--legacy-peer-deps`, and handles errors
 - 8 TypeScript 5.9 errors resolved in upstream files
 
-**Next:** Tag `v0.25.3-multivid` to trigger the release build, or continue development.
+**Release attempt 1 failed:** all CI workflows use `npm ci` which doesn't accept the peer-dep conflict. Fixed by adding `--legacy-peer-deps` to every `npm ci` step across all 5 workflow files (`release.yml`, `release-test.yml`, `lint-frontend.yml`, `test-frontend.yml`, `make.yml`). Tag moved forward to include the fix.
+
+**Next:** Monitor release workflow run for v0.25.3-multivid.
 
 ---
 

@@ -44,7 +44,7 @@ jobs:
             - name: install setuptools (macos)
               if: matrix.os == 'macos-15'
               run: python3 -m pip install setuptools
-            - run: npm ci
+            - run: npm ci --legacy-peer-deps
             - name: publish --dry-run
               shell: bash
               run: |

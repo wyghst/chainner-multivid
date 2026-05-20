@@ -4,6 +4,12 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-20 — v0.25.4-multivid released
+
+Tagged `v0.25.4-multivid` and pushed to origin. GitHub Actions release workflow triggered — installers (.exe, .dmg, .deb, .rpm, .zip) building now.
+
+---
+
 ## 2026-05-20 — v0.25.4-multivid: AMD ROCm detection + informational UI
 
 **What was done:**

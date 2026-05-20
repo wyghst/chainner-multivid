@@ -4,9 +4,11 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
-## 2026-05-20 — v0.25.4-multivid released
+## 2026-05-20 — v0.25.4-multivid released + forge draft fix
 
-Tagged `v0.25.4-multivid` and pushed to origin. GitHub Actions release workflow triggered — installers (.exe, .dmg, .deb, .rpm, .zip) building now.
+Tagged `v0.25.4-multivid` and pushed to origin. All three platform jobs (macOS, Linux, Windows) completed successfully with all 8 assets uploaded.
+
+Post-release: release was created as a draft because `draft: true` and `prerelease: true` were placed outside the `config` block in `forge.config.js`, causing electron-forge to apply them as top-level publisher defaults. Fixed by moving both properties inside `config` and setting them to `false`. Draft manually published via `gh release edit --draft=false --latest`.
 
 ---
 

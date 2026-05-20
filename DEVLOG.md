@@ -4,6 +4,23 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-20 — Merge update/dependencies → main + bump to v0.25.3-multivid
+
+**Done:**
+- Merged `update/dependencies` into `main` (no-ff merge commit).
+- Bumped version to `0.25.3-multivid` (`package.json` + `package-lock.json`).
+
+**What this release contains over v0.25.2-multivid:**
+- All dependency updates (electron-forge 7.11.1, TypeScript 5.9.3, chakra-ui 2.10.9, react 18.3.1, vite 5.4.21, etc.)
+- GitHub Actions updated to `actions/checkout@v4` / `actions/setup-node@v4` (all 8 workflow files)
+- Compatibility fixes: patch-package removal, rregex pinned to 1.10.11, chakra sub-packages explicitly listed
+- `run-test.bat` now auto-pulls, installs with `--legacy-peer-deps`, and handles errors
+- 8 TypeScript 5.9 errors resolved in upstream files
+
+**Next:** Tag `v0.25.3-multivid` to trigger the release build, or continue development.
+
+---
+
 ## 2026-05-20 — Fix TypeScript 5.9 errors (branch: update/dependencies)
 
 **All 8 upstream TypeScript errors resolved. `npm run type-check:js` passes clean.**

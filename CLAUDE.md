@@ -46,7 +46,7 @@ npm run test:py
 ```
 
 Python backend is managed automatically by chaiNNer's integrated Python support — no manual Python setup needed for `npm start`.
-Baseline verified: `npm install --legacy-peer-deps` + `npm run type-check:js` both pass clean on Node.js v25.8.1 (branch: `update/dependencies`).
+Baseline verified: `npm install --legacy-peer-deps` + `npm run type-check:js` both pass clean on Node.js v25.8.1 (as of v0.25.3-multivid).
 
 ---
 

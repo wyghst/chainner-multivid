@@ -65,8 +65,8 @@ const config = {
             name: '@electron-forge/publisher-github',
             config: {
                 repository: {
-                    owner: packageJson.author.name,
-                    name: packageJson.productName,
+                    owner: 'wyghst',
+                    name: 'chainner-multivid',
                 },
             },
             draft: true,

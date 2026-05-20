@@ -85,6 +85,29 @@ Never end a session with uncommitted or unpushed tracking file changes.
 
 ---
 
+## Releasing
+
+```bash
+# 1. Bump version (updates package.json + package-lock.json, no git tag)
+npm version <new-version> --no-git-tag-version
+git add package.json package-lock.json
+git commit -m "chore: bump version to <new-version>"
+git push origin main
+
+# 2. Tag and push — triggers the release.yml workflow automatically
+git tag v<new-version>
+git push origin v<new-version>
+```
+
+Installers (`.exe`, `.dmg`, `.AppImage`) are built by GitHub Actions and uploaded to the GitHub Release page.
+
+**Prerequisites (one-time, already done):**
+- `forge.config.js` publisher hardcoded to `wyghst/chainner-multivid`
+- Release workflow has `permissions: contents: write`
+- Repo Actions setting: Settings → Actions → General → "Read and write permissions"
+
+---
+
 ## Syncing Upstream
 
 ```bash

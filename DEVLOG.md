@@ -4,6 +4,23 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-19 — Release v0.25.2-multivid
+
+**Done:**
+- Bumped version to `0.25.2-multivid` in `package.json` / `package-lock.json`.
+- Merged `feature/multi-video-batch` into `main` via PR #1.
+- Tagged `v0.25.2-multivid` and triggered the inherited `release.yml` GitHub Actions workflow.
+
+**Two bugs fixed before the release build succeeded:**
+
+1. **Wrong publish target** — `forge.config.js` used `packageJson.author.name` / `packageJson.productName` to build the GitHub repo path, which resolved to `chaiNNer-org/chaiNNer` (the upstream). The `GITHUB_TOKEN` has no write access there. Fixed by hardcoding `owner: 'wyghst', name: 'chainner-multivid'` in the publisher config.
+
+2. **Token write permission** — even after fixing the repo path, the token was blocked. Required two steps: (a) add `permissions: contents: write` to the release workflow job, and (b) set the repo's Actions workflow permissions to "Read and write" under Settings → Actions → General.
+
+**How to release in future:** bump version with `npm version <ver> --no-git-tag-version`, commit, push to `main`, then `git tag v<ver> && git push origin v<ver>`. The workflow fires automatically.
+
+---
+
 ## 2026-05-19 — Feature complete + merge to main
 
 **Done:**

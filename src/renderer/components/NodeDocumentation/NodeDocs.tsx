@@ -18,7 +18,7 @@ import i18n from 'i18next';
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useContext } from 'use-context-selector';
-import { Condition, Input, NodeSchema, Output, TextInput } from '../../../common/common-types';
+import { Condition, Input, InputId, NodeSchema, Output, OutputId, TextInput } from '../../../common/common-types';
 import { isTautology } from '../../../common/nodes/condition';
 import { getInputCondition } from '../../../common/nodes/inputCondition';
 import { explain } from '../../../common/types/explain';
@@ -114,8 +114,8 @@ const InputOutputItem = memo(
 
         const isIterated =
             kind === 'input'
-                ? schema.iteratorInputs.some((i) => i.inputs.includes(item.id))
-                : schema.iteratorOutputs.some((i) => i.outputs.includes(item.id));
+                ? schema.iteratorInputs.some((i) => i.inputs.includes(item.id as InputId))
+                : schema.iteratorOutputs.some((i) => i.outputs.includes(item.id as OutputId));
 
         const handleColors = useTypeColor(type);
 

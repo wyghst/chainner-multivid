@@ -4,6 +4,23 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-20 — Fix TypeScript 5.9 errors (branch: update/dependencies)
+
+**All 8 upstream TypeScript errors resolved. `npm run type-check:js` passes clean.**
+
+Fixes applied (all in upstream files — minimal, surgical casts only):
+
+| File | Error | Fix |
+|------|-------|-----|
+| `src/main/arguments.ts` (×4) | yargs `parseSync()` infers props as `unknown` in TS 5.9 | Added `as string \| undefined` / `as boolean` / `as string` casts at return sites |
+| `src/main/squirrel.ts` (×1) | `rmdirSync` with `{recursive}` option removed from `@types/node` | Replaced with `rmSync(p, { recursive: true, force: true })` (modern Node API) |
+| `src/renderer/components/node/NodeInputs.tsx` (×1) | `React.memo` return type broadened to `ReactNode` (includes `undefined`) in `@types/react@18.3`, incompatible with `InputItemRenderer` (`JSX.Element \| null`) | Cast memo component `as unknown as InputItemRenderer` |
+| `src/renderer/components/NodeDocumentation/NodeDocs.tsx` (×2) | `item.id` typed as `InputId \| OutputId` in union component; `Array.includes` requires exact element type in TS 5.9 | Imported `InputId`/`OutputId`; added targeted casts in each ternary branch |
+
+**Next:** Merge `update/dependencies` → `main`.
+
+---
+
 ## 2026-05-19 — Vulnerability audit + compatibility fixes (branch: update/dependencies)
 
 **App status:** working on Windows and Mac after the fixes below.

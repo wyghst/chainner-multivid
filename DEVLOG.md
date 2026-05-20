@@ -4,6 +4,12 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-20 — v0.25.5-multivid released
+
+All three platform jobs completed successfully (macOS 3m8s, Windows, Ubuntu 3m58s). Release published directly as non-draft — confirms the forge.config.js `draft: false` fix from v0.25.4 is working correctly. All 8 assets present. Marked as Latest.
+
+---
+
 ## 2026-05-20 — v0.25.5-multivid: GitHub Actions Node.js 24 upgrade
 
 Updated all 8 workflow files (release, release-test, make, lint-backend, lint-frontend, test-backend, test-frontend, wiki) from `actions/checkout@v4`, `actions/setup-node@v4`, `actions/setup-python@v4/v5` to v6 across the board. GitHub is forcing Node.js 20 actions to Node.js 24 on June 2nd, 2026 — this update resolves the deprecation warnings before the deadline. Bumped to 0.25.5-multivid.

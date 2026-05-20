@@ -4,6 +4,27 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-20 — Session wrap-up
+
+**Current state:** `main` is clean, all changes committed and pushed. v0.25.3-multivid is publicly released.
+
+**What's shipped in v0.25.3-multivid:**
+- `Load Videos` generator node + `Save Videos` collector node (multi-video batch feature)
+- `Resize To Side` — Force Even Dimensions toggle (H.264/H.265 compatibility)
+- Full dependency refresh (electron-forge 7.11.1, TypeScript 5.9.3, react 18.3.1, chakra-ui 2.10.9, vite 5.4.21)
+- All 8 TypeScript 5.9 compatibility fixes
+- GitHub Actions updated (checkout@v4, setup-node@v4) + `--legacy-peer-deps` on all `npm ci` steps
+- `run-test.bat` auto-pull/install/start for Windows testers
+
+**Known deferred items:**
+- Electron upgrade (25.x → 42): security CVEs, but significant effort; hold until Forge v8 stabilizes
+- Dart Sass legacy-js-api warnings: cosmetic, no action until Dart Sass 2.0
+- 47 npm vulnerabilities: all require major version jumps, same as upstream chaiNNer
+
+**No open action items.**
+
+---
+
 ## 2026-05-20 — Merge update/dependencies → main + bump to v0.25.3-multivid
 
 **Done:**

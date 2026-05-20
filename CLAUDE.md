@@ -20,7 +20,8 @@ chaiNNer enforces that **only one iterator node may exist per chain lineage**. T
 
 ```bash
 # Install dependencies (requires Node.js >= 18, npm >= 7)
-npm install
+# --legacy-peer-deps required: use-context-selector 1.4.4 pulls a react-native peer that wants @types/react@^19
+npm install --legacy-peer-deps
 
 # TypeScript type check (fast baseline verification)
 npm run type-check:js
@@ -45,7 +46,7 @@ npm run test:py
 ```
 
 Python backend is managed automatically by chaiNNer's integrated Python support — no manual Python setup needed for `npm start`.
-Baseline verified: `npm install` + `npm run type-check:js` both pass clean on Node.js v25.8.1.
+Baseline verified: `npm install --legacy-peer-deps` + `npm run type-check:js` both pass clean on Node.js v25.8.1 (branch: `update/dependencies`).
 
 ---
 

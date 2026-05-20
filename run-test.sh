@@ -12,6 +12,11 @@ if ! command -v node &>/dev/null; then
 fi
 echo "Node.js $(node --version) found."
 
+# Pull latest from git
+echo ""
+echo "Pulling latest changes..."
+git pull origin update/dependencies || echo "WARNING: git pull failed. Continuing with local files."
+
 # Install / sync dependencies
 echo ""
 echo "Syncing dependencies..."

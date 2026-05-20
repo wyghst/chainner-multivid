@@ -15,6 +15,14 @@ if errorlevel 1 (
 for /f "delims=" %%v in ('node --version') do set NODE_VER=%%v
 echo Node.js %NODE_VER% found.
 
+:: Pull latest from git
+echo.
+echo Pulling latest changes...
+git pull origin update/dependencies
+if errorlevel 1 (
+    echo WARNING: git pull failed. Continuing with local files.
+)
+
 :: Install / sync dependencies
 echo.
 echo Syncing dependencies...

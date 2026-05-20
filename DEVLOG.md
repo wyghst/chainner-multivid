@@ -4,6 +4,22 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-19 — Feature complete + merge to main
+
+**Done:**
+- Confirmed Resize To Side "Force Even Dimensions" toggle works end-to-end.
+- Full Phase 4 verification passed: Load Videos → Resize To Side → Save Videos chain produces one output file per source video with correct audio, FPS, directory, and even-pixel dimensions.
+- Merged `feature/multi-video-batch` into `main` via PR #1.
+
+**Feature summary (all shipped):**
+- `Load Videos` generator node — scans a folder, iterates all frames from all videos as one flat stream; outputs Frame, FrameIndex, VideoIndex, VideoName, FPS, AudioStream (iterated), TotalVideos, Directory (static)
+- `Save Videos` collector node — detects VideoName change to open a new FFmpeg writer per source video; carries audio and native FPS through
+- `Resize To Side` — new "Force Even Dimensions" toggle snaps output to nearest even pixel, satisfying H.264/H.265 libx265
+
+**Status:** Complete. No open items.
+
+---
+
 ## 2026-05-19 — Force Even Dimensions option on Resize To Side
 
 **Done:**

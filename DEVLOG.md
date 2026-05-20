@@ -4,6 +4,22 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-20 — v0.25.4-multivid: AMD ROCm detection + informational UI
+
+**What was done:**
+- Added `backend/src/amd.py`: Windows-only AMD GPU detection via PowerShell/WMI. Identifies ROCm-compatible cards (RDNA 2/3/4, Vega 20) by GPU name pattern matching. Exports `amd` singleton, `HIP_SDK_URL`, and `ROCM_PYTORCH_DOCS_URL`.
+- Updated `backend/src/packages/chaiNNer_pytorch/__init__.py`: when a ROCm-compatible AMD GPU is detected on Windows, the PyTorch package description and install hint now name the detected GPU, explain that chaiNNer's Python 3.11 environment cannot host AMD's Windows ROCm wheels (which require Python 3.12), and provide direct links to the AMD HIP SDK download page and AMD's PyTorch-on-ROCm setup guide. Falls back to the existing NVIDIA/CPU messaging on all other platforms.
+- Bumped version to `0.25.4-multivid`.
+
+**Design decisions:**
+- Auto-installing the ROCm PyTorch wheel was ruled out: AMD's Windows ROCm wheels are `cp312`-only and also require 4 additional `rocm_sdk_*` packages — incompatible with chaiNNer's bundled Python 3.11.5. Option B (Python 3.12 upgrade + full auto-install) deferred for a future release.
+- Detection is best-effort: WMI query failure returns `AmdInfo.unavailable()` silently, so no startup crash on non-Windows or restricted environments.
+
+**Next steps (deferred):**
+- Option B: bump bundled Python to 3.12, add ROCm wheel auto-install when HIP SDK is detected.
+
+---
+
 ## 2026-05-20 — Session wrap-up
 
 **Current state:** `main` is clean, all changes committed and pushed. v0.25.3-multivid is publicly released.

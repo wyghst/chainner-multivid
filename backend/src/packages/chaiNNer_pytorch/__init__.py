@@ -1,6 +1,7 @@
 import os
 
 from api import GB, KB, MB, Dependency, add_package
+from amd import HIP_SDK_URL, ROCM_PYTORCH_DOCS_URL, amd
 from gpu import nvidia
 from logger import logger
 from system import is_arm_mac
@@ -11,6 +12,22 @@ if is_arm_mac:
     os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
     package_description = general
     inst_hint = f"{general} It is the most widely-used upscaling architecture."
+elif amd.has_rocm_compatible_gpu:
+    _detected = ", ".join(amd.rocm_compatible_names)
+    package_description = (
+        f"{general} AMD ROCm-compatible GPU detected ({_detected}). Full ROCm"
+        " acceleration on Windows requires Python 3.12 and the AMD HIP SDK —"
+        " chaiNNer currently uses Python 3.11, so CPU mode will be used for now."
+        f" Download the HIP SDK: {HIP_SDK_URL}"
+    )
+    inst_hint = (
+        f"{general} It is the most widely-used upscaling architecture."
+        f" ROCm-compatible AMD GPU detected ({_detected}), but chaiNNer's built-in"
+        " Python (3.11) does not yet support AMD's ROCm wheels for Windows, which"
+        " require Python 3.12. PyTorch will be installed in CPU mode. To use GPU"
+        f" acceleration now, download the AMD HIP SDK ({HIP_SDK_URL}) and follow"
+        f" AMD's manual setup guide: {ROCM_PYTORCH_DOCS_URL}"
+    )
 else:
     package_description = (
         f"{general} and is fastest when CUDA is supported (Nvidia GPU). If CUDA is"
@@ -18,7 +35,7 @@ else:
     )
     inst_hint = (
         f"{general} It is the most widely-used upscaling architecture. However, it does"
-        " not support AMD GPUs."
+        " not support AMD GPUs natively on Windows — CPU fallback only."
     )
 
 

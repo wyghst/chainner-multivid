@@ -67,6 +67,7 @@ Baseline verified: `npm install --legacy-peer-deps` + `npm run type-check:js` bo
   - `backend/src/packages/chaiNNer_standard/image/video_frames/load_videos.py` — Load Videos generator node
   - `backend/src/packages/chaiNNer_standard/image/video_frames/save_videos.py` — Save Videos collector node
   - `backend/src/packages/chaiNNer_standard/image_dimension/resize/resize_to_side.py` — added Force Even Dimensions option (input id=5)
+  - `backend/src/amd.py` — AMD GPU detection (Windows); identifies ROCm-compatible cards, exports HIP SDK + ROCm PyTorch doc URLs
 - **DEVLOG.md:** Updated at the end of every working session (reverse-chronological)
 
 ## Tracking File Maintenance

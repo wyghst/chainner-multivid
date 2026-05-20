@@ -19,14 +19,11 @@ echo Node.js %NODE_VER% found.
 echo.
 echo Pulling latest changes...
 git pull origin update/dependencies
-if errorlevel 1 (
-    echo WARNING: git pull failed. Continuing with local files.
-)
+echo.
 
 :: Install / sync dependencies
-echo.
 echo Syncing dependencies...
-npm install --legacy-peer-deps
+call npm install --legacy-peer-deps --no-audit
 if errorlevel 1 (
     echo ERROR: npm install failed.
     pause
@@ -35,14 +32,10 @@ if errorlevel 1 (
 
 echo.
 echo Starting chainner-multivid...
-echo ^(The app window will open. Close it or press Ctrl+C here to stop.^)
+echo ^(Close the app window to return here.^)
 echo.
 
-npm start
-if errorlevel 1 (
-    echo.
-    echo ERROR: npm start failed. See output above.
-    pause
-    exit /b 1
-)
+call npm start
+echo.
+echo App closed.
 pause

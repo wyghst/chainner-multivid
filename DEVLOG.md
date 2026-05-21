@@ -4,7 +4,22 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
-## 2026-05-20 — v0.25.6-multivid released
+## 2026-05-21 — v0.25.7-multivid: SSE timeout + log spam fixes
+
+**Problem:** Multivideo (and single video) chains appeared to stop mid-run at around 1,000–1,500 frames.
+
+**Root cause analysis from logs:**
+- The worker backend was NOT crashing — worker.log showed it actively processing frames long after the apparent "stop"
+- The frontend was losing its SSE connection to the backend at exactly the 1-hour mark on every session
+- A second issue: `logger.info("TensorRT cache location: ...")` in `chaiNNer_onnx/settings.py` fires once per frame, making worker.log unreadably large (328KB of noise)
+
+**Fixes:**
+- `backend/src/server_process_helper.py`: Changed SSE proxy timeout from `total=60 * 60` (1 hour) to `total=None`. The 1-hour cap is inappropriate for long video processing runs.
+- `backend/src/packages/chaiNNer_onnx/settings.py`: Changed `logger.info` → `logger.debug` for TensorRT cache path log line. This fires once per frame and was flooding the log.
+
+---
+
+## 2026-05-21 — v0.25.6-multivid released
 
 Tagged and pushed `v0.25.6-multivid`. Contains AMD GPU detection fix (PowerShell absolute path), ONNX DirectML default provider fix, blank GPU dropdown fix, and corrected package descriptions for PyTorch and ONNX re: AMD Windows support.
 

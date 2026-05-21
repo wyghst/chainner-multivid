@@ -96,7 +96,7 @@ def get_settings(context: NodeContext) -> OnnxSettings:
     settings = context.settings
 
     tensorrt_cache_path = settings.get_cache_location("onnx_tensorrt_cache")
-    logger.info("TensorRT cache location: %s", tensorrt_cache_path)
+    logger.debug("TensorRT cache location: %s", tensorrt_cache_path)
     if tensorrt_cache_path and not os.path.exists(tensorrt_cache_path):
         os.makedirs(tensorrt_cache_path)
 

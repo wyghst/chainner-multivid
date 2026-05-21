@@ -4,6 +4,10 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-21 — v0.25.7-multivid released
+
+Tagged and pushed `v0.25.7-multivid`.
+
 ## 2026-05-21 — v0.25.7-multivid: SSE timeout + log spam fixes
 
 **Problem:** Multivideo (and single video) chains appeared to stop mid-run at around 1,000–1,500 frames.

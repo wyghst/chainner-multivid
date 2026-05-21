@@ -4,6 +4,16 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-21 — v0.25.7-multivid: SSE fix confirmed holding
+
+**Test:** Single-video ONNX (DirectML, RX 9070 XT) chain on 188,000-frame video.
+
+At ~40 min of runtime the job reached frame 4,670 and was still processing — well past the ~1,200 frame / ~20 min stall point seen in v0.25.6. The SSE timeout fix (`total=None`) appears to be the root cause fix. Previous runs that stalled around 20 minutes may have been slower (different settings or earlier code) and were actually approaching the 1-hour wall faster than the frame count suggested.
+
+**Status:** Test in progress; will record final outcome when job completes or stalls.
+
+---
+
 ## 2026-05-21 — v0.25.7-multivid released
 
 Tagged and pushed `v0.25.7-multivid`.

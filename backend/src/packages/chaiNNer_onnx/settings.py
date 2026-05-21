@@ -13,7 +13,7 @@ from system import is_arm_mac
 
 from . import package
 
-if not is_arm_mac:
+if not is_arm_mac and nvidia.is_available:
     package.add_setting(
         DropdownSetting(
             label="GPU",
@@ -28,10 +28,11 @@ if not is_arm_mac:
 def get_providers():
     providers = cast(list[str], ort.get_available_providers())
 
-    default = providers[0]
     if "CUDAExecutionProvider" in providers:
         default = "CUDAExecutionProvider"
-    elif "CPUExecutionProvider" in providers:
+    elif "DmlExecutionProvider" in providers:
+        default = "DmlExecutionProvider"
+    else:
         default = "CPUExecutionProvider"
 
     return providers, default

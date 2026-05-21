@@ -4,6 +4,25 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-20 — AMD GPU detection bug fixes + ONNX DirectML clarification
+
+**Problem reported:** RX 9070 XT owner installed HIP SDK drivers but saw no AMD detection prompt in chaiNNer and GPU didn't appear as a PyTorch device option.
+
+**Root causes found:**
+1. `_get_amd_gpu_names_windows()` was calling `powershell` by bare name. Electron spawns the Python backend with a stripped PATH that omits `C:\Windows\System32\WindowsPowerShell\v1.0\`, so the subprocess threw `FileNotFoundError` which was silently caught — GPU detection always returned an empty list.
+2. The PyTorch package description incorrectly stated "requires Python 3.12" as the reason for CPU-only mode. The real reason is that PyTorch publishes **no Windows ROCm wheels at all** (Linux only) — the Python version is irrelevant.
+3. The ONNX package description said "does not support AMD GPUs, in linux" — which is misleading. On Windows without NVIDIA, chaiNNer already installs `onnxruntime-directml`, which gives DirectML GPU acceleration on any DX12 card including AMD.
+
+**Fixes applied:**
+- `backend/src/amd.py`: Build absolute path to `powershell.exe` from `%SystemRoot%` env var; added diagnostic logging at WARNING level for failures; added per-pattern match logging.
+- `backend/src/packages/chaiNNer_pytorch/__init__.py`: Corrected AMD description — no Windows ROCm wheels exist, HIP SDK alone is insufficient, manual setup guide linked.
+- `backend/src/packages/chaiNNer_onnx/__init__.py`: Added Windows/non-NVIDIA branch in description that correctly describes DirectML acceleration on AMD GPUs.
+- `backend/src/packages/chaiNNer_onnx/settings.py`: Fixed two bugs: (1) GPU index dropdown was always shown even with no NVIDIA devices, appearing as a blank broken control — now hidden unless `nvidia.is_available`; (2) `get_providers()` default logic always fell through to `CPUExecutionProvider` even when `DmlExecutionProvider` was present (because `"CPUExecutionProvider" in providers` is always true) — priority is now CUDA → Dml → CPU.
+
+**Key finding:** For AMD GPU acceleration in chaiNNer on Windows, the ONNX package (DirectML) is the correct path — not PyTorch. PyTorch GPU acceleration for AMD requires Linux + ROCm. With `onnxruntime-directml` installed, the Execution Provider dropdown now defaults to `Dml` automatically on AMD Windows systems.
+
+---
+
 ## 2026-05-20 — v0.25.5-multivid released
 
 All three platform jobs completed successfully (macOS 3m8s, Windows, Ubuntu 3m58s). Release published directly as non-draft — confirms the forge.config.js `draft: false` fix from v0.25.4 is working correctly. All 8 assets present. Marked as Latest.

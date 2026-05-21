@@ -15,18 +15,19 @@ if is_arm_mac:
 elif amd.has_rocm_compatible_gpu:
     _detected = ", ".join(amd.rocm_compatible_names)
     package_description = (
-        f"{general} AMD ROCm-compatible GPU detected ({_detected}). Full ROCm"
-        " acceleration on Windows requires Python 3.12 and the AMD HIP SDK —"
-        " chaiNNer currently uses Python 3.11, so CPU mode will be used for now."
-        f" Download the HIP SDK: {HIP_SDK_URL}"
+        f"{general} AMD ROCm-compatible GPU detected ({_detected}). Unfortunately,"
+        " PyTorch does not publish ROCm-enabled wheels for Windows — only Linux is"
+        " supported. PyTorch will be installed in CPU mode, which is slow. For GPU"
+        " acceleration on Windows, AMD recommends using the HIP SDK with a manual"
+        f" Python environment: {ROCM_PYTORCH_DOCS_URL}"
     )
     inst_hint = (
         f"{general} It is the most widely-used upscaling architecture."
-        f" ROCm-compatible AMD GPU detected ({_detected}), but chaiNNer's built-in"
-        " Python (3.11) does not yet support AMD's ROCm wheels for Windows, which"
-        " require Python 3.12. PyTorch will be installed in CPU mode. To use GPU"
-        f" acceleration now, download the AMD HIP SDK ({HIP_SDK_URL}) and follow"
-        f" AMD's manual setup guide: {ROCM_PYTORCH_DOCS_URL}"
+        f" ROCm-compatible AMD GPU detected ({_detected}), but PyTorch does not"
+        " publish ROCm wheels for Windows (only Linux). The HIP SDK alone is not"
+        " sufficient — there are no pip-installable Windows ROCm wheels for PyTorch."
+        " PyTorch will be installed in CPU mode. For GPU acceleration, AMD's manual"
+        f" setup guide (external Python environment required): {ROCM_PYTORCH_DOCS_URL}"
     )
 else:
     package_description = (

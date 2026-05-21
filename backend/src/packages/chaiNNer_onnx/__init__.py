@@ -9,12 +9,22 @@ conversion = "It also helps to convert between PyTorch and NCNN."
 if is_arm_mac:
     package_description = f"{general} {conversion} However, it does not support CoreML."
     inst_hint = general
+elif is_windows and not nvidia.is_available:
+    package_description = (
+        f"{general} {conversion} On Windows without an NVIDIA GPU, it installs"
+        " ONNX Runtime with DirectML, which accelerates inference on any DirectX 12"
+        " GPU — including AMD Radeon cards."
+    )
+    inst_hint = (
+        f"{general} On Windows without NVIDIA, ONNX Runtime uses DirectML for GPU"
+        " acceleration on AMD, Intel, and other DirectX 12 GPUs."
+    )
 else:
     package_description = (
         f"{general} {conversion} It is fastest when CUDA is supported. If TensorRT is"
         " installed on the system, it can also be configured to use that."
     )
-    inst_hint = f"{general} It does not support AMD GPUs, in linux."
+    inst_hint = f"{general} It does not support AMD GPUs on Linux."
 
 
 def get_onnx_runtime():

@@ -1,10 +1,21 @@
 from __future__ import annotations
 
+import os
 import subprocess
 from dataclasses import dataclass, field
 
 from logger import logger
 from system import is_windows
+
+# Electron spawns the Python backend with a restricted PATH that often excludes
+# the PowerShell directory, so we build the absolute path from %SystemRoot%.
+_POWERSHELL = os.path.join(
+    os.environ.get("SystemRoot", r"C:\Windows"),
+    "System32",
+    "WindowsPowerShell",
+    "v1.0",
+    "powershell.exe",
+)
 
 # GPU name substrings that indicate a ROCm-compatible AMD card on Windows.
 # RDNA 2 (RX 6000), RDNA 3 (RX 7000), RDNA 4 (RX 9000), Vega 20 (Radeon VII).
@@ -53,7 +64,7 @@ def _get_amd_gpu_names_windows() -> list[str]:
     try:
         result = subprocess.run(
             [
-                "powershell",
+                _POWERSHELL,
                 "-NoProfile",
                 "-NonInteractive",
                 "-Command",
@@ -69,7 +80,7 @@ def _get_amd_gpu_names_windows() -> list[str]:
             if line.strip() and ("AMD" in line or "Radeon" in line)
         ]
     except Exception as e:
-        logger.info("Failed to query AMD GPU info: %s", e)
+        logger.warning("Failed to query AMD GPU info via WMI (path: %s): %s", _POWERSHELL, e)
         return []
 
 
@@ -79,6 +90,18 @@ def _get_amd_info() -> AmdInfo:
     gpu_names = _get_amd_gpu_names_windows()
     if gpu_names:
         logger.info("Detected AMD GPU(s): %s", ", ".join(gpu_names))
+        rocm_names = [
+            n for n in gpu_names if any(p in n for p in _ROCM_COMPATIBLE_PATTERNS)
+        ]
+        if rocm_names:
+            logger.info("ROCm-compatible AMD GPU(s): %s", ", ".join(rocm_names))
+        else:
+            logger.info(
+                "AMD GPU(s) found but none match ROCm-compatible patterns: %s",
+                gpu_names,
+            )
+    else:
+        logger.info("No AMD GPU detected via WMI (or WMI query failed).")
     return AmdInfo(gpu_names=gpu_names)
 
 

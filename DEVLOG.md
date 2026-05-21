@@ -4,6 +4,12 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-20 — v0.25.6-multivid released
+
+Tagged and pushed `v0.25.6-multivid`. Contains AMD GPU detection fix (PowerShell absolute path), ONNX DirectML default provider fix, blank GPU dropdown fix, and corrected package descriptions for PyTorch and ONNX re: AMD Windows support.
+
+---
+
 ## 2026-05-20 — AMD GPU detection bug fixes + ONNX DirectML clarification
 
 **Problem reported:** RX 9070 XT owner installed HIP SDK drivers but saw no AMD detection prompt in chaiNNer and GPU didn't appear as a PyTorch device option.

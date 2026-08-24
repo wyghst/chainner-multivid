@@ -94,6 +94,10 @@ backend/python/*
 # IDE nonsense
 .idea/
 
+# DATA_ROOT symlinks (bare names — a directory pattern doesn't match a symlink)
+tests/snip1.png
+tests/snip2.png
+
 
 ##############
 ### Python ###

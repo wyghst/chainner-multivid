@@ -1,4 +1,4 @@
-name: Publish Wiki
+﻿name: Publish Wiki
 
 # Trigger this action only if there are changes pushed to the wiki/** directory under the main branch
 on:
@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Pull content from wiki
         run: |

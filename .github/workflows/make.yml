@@ -1,4 +1,4 @@
-name: Test build release
+﻿name: Test build release
 
 on:
     pull_request:
@@ -25,16 +25,16 @@ jobs:
                 os: [macos-15, ubuntu-latest, windows-latest]
 
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
               with:
                   node-version: 18
                   cache: 'npm'
             - name: setup python
-              uses: actions/setup-python@v5
+              uses: actions/setup-python@v6
               with:
                 python-version: 3.12
-            - run: npm ci
+            - run: npm ci --legacy-peer-deps
             - name: Install necessary FlatPak tools
               if: ${{ matrix.os == 'ubuntu-latest' }}
               run: |
@@ -62,7 +62,7 @@ jobs:
             #       APPLE_SIGNING_ID: ${{ secrets.APPLE_SIGNING_ID }}
               shell: bash
               run: |
-                  npm ci
+                  npm ci --legacy-peer-deps
                   if [[ "${{ matrix.os }}" != "macos-15" ]]; then
                       npm run make -- --no-sign
                   else

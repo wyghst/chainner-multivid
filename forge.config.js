@@ -68,9 +68,9 @@ const config = {
                     owner: 'wyghst',
                     name: 'chainner-multivid',
                 },
+                draft: false,
+                prerelease: false,
             },
-            draft: true,
-            prerelease: true,
         },
     ],
     makers: [

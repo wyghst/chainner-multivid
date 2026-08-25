@@ -4,6 +4,139 @@ Reverse-chronological session log. Most recent entry first.
 
 ---
 
+## 2026-05-21 — v0.25.7-multivid: SSE fix confirmed holding
+
+**Test:** Single-video ONNX (DirectML, RX 9070 XT) chain on 188,000-frame video.
+
+At ~40 min of runtime the job reached frame 4,670 and was still processing — well past the ~1,200 frame / ~20 min stall point seen in v0.25.6. The SSE timeout fix (`total=None`) appears to be the root cause fix. Previous runs that stalled around 20 minutes may have been slower (different settings or earlier code) and were actually approaching the 1-hour wall faster than the frame count suggested.
+
+**Status:** Test in progress; will record final outcome when job completes or stalls.
+
+---
+
+## 2026-05-21 — v0.25.7-multivid released
+
+Tagged and pushed `v0.25.7-multivid`.
+
+## 2026-05-21 — v0.25.7-multivid: SSE timeout + log spam fixes
+
+**Problem:** Multivideo (and single video) chains appeared to stop mid-run at around 1,000–1,500 frames.
+
+**Root cause analysis from logs:**
+- The worker backend was NOT crashing — worker.log showed it actively processing frames long after the apparent "stop"
+- The frontend was losing its SSE connection to the backend at exactly the 1-hour mark on every session
+- A second issue: `logger.info("TensorRT cache location: ...")` in `chaiNNer_onnx/settings.py` fires once per frame, making worker.log unreadably large (328KB of noise)
+
+**Fixes:**
+- `backend/src/server_process_helper.py`: Changed SSE proxy timeout from `total=60 * 60` (1 hour) to `total=None`. The 1-hour cap is inappropriate for long video processing runs.
+- `backend/src/packages/chaiNNer_onnx/settings.py`: Changed `logger.info` → `logger.debug` for TensorRT cache path log line. This fires once per frame and was flooding the log.
+
+---
+
+## 2026-05-21 — v0.25.6-multivid released
+
+Tagged and pushed `v0.25.6-multivid`. Contains AMD GPU detection fix (PowerShell absolute path), ONNX DirectML default provider fix, blank GPU dropdown fix, and corrected package descriptions for PyTorch and ONNX re: AMD Windows support.
+
+---
+
+## 2026-05-20 — AMD GPU detection bug fixes + ONNX DirectML clarification
+
+**Problem reported:** RX 9070 XT owner installed HIP SDK drivers but saw no AMD detection prompt in chaiNNer and GPU didn't appear as a PyTorch device option.
+
+**Root causes found:**
+1. `_get_amd_gpu_names_windows()` was calling `powershell` by bare name. Electron spawns the Python backend with a stripped PATH that omits `C:\Windows\System32\WindowsPowerShell\v1.0\`, so the subprocess threw `FileNotFoundError` which was silently caught — GPU detection always returned an empty list.
+2. The PyTorch package description incorrectly stated "requires Python 3.12" as the reason for CPU-only mode. The real reason is that PyTorch publishes **no Windows ROCm wheels at all** (Linux only) — the Python version is irrelevant.
+3. The ONNX package description said "does not support AMD GPUs, in linux" — which is misleading. On Windows without NVIDIA, chaiNNer already installs `onnxruntime-directml`, which gives DirectML GPU acceleration on any DX12 card including AMD.
+
+**Fixes applied:**
+- `backend/src/amd.py`: Build absolute path to `powershell.exe` from `%SystemRoot%` env var; added diagnostic logging at WARNING level for failures; added per-pattern match logging.
+- `backend/src/packages/chaiNNer_pytorch/__init__.py`: Corrected AMD description — no Windows ROCm wheels exist, HIP SDK alone is insufficient, manual setup guide linked.
+- `backend/src/packages/chaiNNer_onnx/__init__.py`: Added Windows/non-NVIDIA branch in description that correctly describes DirectML acceleration on AMD GPUs.
+- `backend/src/packages/chaiNNer_onnx/settings.py`: Fixed two bugs: (1) GPU index dropdown was always shown even with no NVIDIA devices, appearing as a blank broken control — now hidden unless `nvidia.is_available`; (2) `get_providers()` default logic always fell through to `CPUExecutionProvider` even when `DmlExecutionProvider` was present (because `"CPUExecutionProvider" in providers` is always true) — priority is now CUDA → Dml → CPU.
+
+**Key finding:** For AMD GPU acceleration in chaiNNer on Windows, the ONNX package (DirectML) is the correct path — not PyTorch. PyTorch GPU acceleration for AMD requires Linux + ROCm. With `onnxruntime-directml` installed, the Execution Provider dropdown now defaults to `Dml` automatically on AMD Windows systems.
+
+---
+
+## 2026-05-20 — v0.25.5-multivid released
+
+All three platform jobs completed successfully (macOS 3m8s, Windows, Ubuntu 3m58s). Release published directly as non-draft — confirms the forge.config.js `draft: false` fix from v0.25.4 is working correctly. All 8 assets present. Marked as Latest.
+
+---
+
+## 2026-05-20 — v0.25.5-multivid: GitHub Actions Node.js 24 upgrade
+
+Updated all 8 workflow files (release, release-test, make, lint-backend, lint-frontend, test-backend, test-frontend, wiki) from `actions/checkout@v4`, `actions/setup-node@v4`, `actions/setup-python@v4/v5` to v6 across the board. GitHub is forcing Node.js 20 actions to Node.js 24 on June 2nd, 2026 — this update resolves the deprecation warnings before the deadline. Bumped to 0.25.5-multivid.
+
+---
+
+## 2026-05-20 — v0.25.4-multivid released + forge draft fix
+
+Tagged `v0.25.4-multivid` and pushed to origin. All three platform jobs (macOS, Linux, Windows) completed successfully with all 8 assets uploaded.
+
+Post-release: release was created as a draft because `draft: true` and `prerelease: true` were placed outside the `config` block in `forge.config.js`, causing electron-forge to apply them as top-level publisher defaults. Fixed by moving both properties inside `config` and setting them to `false`. Draft manually published via `gh release edit --draft=false --latest`.
+
+---
+
+## 2026-05-20 — v0.25.4-multivid: AMD ROCm detection + informational UI
+
+**What was done:**
+- Added `backend/src/amd.py`: Windows-only AMD GPU detection via PowerShell/WMI. Identifies ROCm-compatible cards (RDNA 2/3/4, Vega 20) by GPU name pattern matching. Exports `amd` singleton, `HIP_SDK_URL`, and `ROCM_PYTORCH_DOCS_URL`.
+- Updated `backend/src/packages/chaiNNer_pytorch/__init__.py`: when a ROCm-compatible AMD GPU is detected on Windows, the PyTorch package description and install hint now name the detected GPU, explain that chaiNNer's Python 3.11 environment cannot host AMD's Windows ROCm wheels (which require Python 3.12), and provide direct links to the AMD HIP SDK download page and AMD's PyTorch-on-ROCm setup guide. Falls back to the existing NVIDIA/CPU messaging on all other platforms.
+- Bumped version to `0.25.4-multivid`.
+
+**Design decisions:**
+- Auto-installing the ROCm PyTorch wheel was ruled out: AMD's Windows ROCm wheels are `cp312`-only and also require 4 additional `rocm_sdk_*` packages — incompatible with chaiNNer's bundled Python 3.11.5. Option B (Python 3.12 upgrade + full auto-install) deferred for a future release.
+- Detection is best-effort: WMI query failure returns `AmdInfo.unavailable()` silently, so no startup crash on non-Windows or restricted environments.
+
+**Next steps (deferred):**
+- Option B: bump bundled Python to 3.12, add ROCm wheel auto-install when HIP SDK is detected.
+
+---
+
+## 2026-05-20 — Session wrap-up
+
+**Current state:** `main` is clean, all changes committed and pushed. v0.25.3-multivid is publicly released.
+
+**What's shipped in v0.25.3-multivid:**
+- `Load Videos` generator node + `Save Videos` collector node (multi-video batch feature)
+- `Resize To Side` — Force Even Dimensions toggle (H.264/H.265 compatibility)
+- Full dependency refresh (electron-forge 7.11.1, TypeScript 5.9.3, react 18.3.1, chakra-ui 2.10.9, vite 5.4.21)
+- All 8 TypeScript 5.9 compatibility fixes
+- GitHub Actions updated (checkout@v4, setup-node@v4) + `--legacy-peer-deps` on all `npm ci` steps
+- `run-test.bat` auto-pull/install/start for Windows testers
+
+**Known deferred items:**
+- Electron upgrade (25.x → 42): security CVEs, but significant effort; hold until Forge v8 stabilizes
+- Dart Sass legacy-js-api warnings: cosmetic, no action until Dart Sass 2.0
+- 47 npm vulnerabilities: all require major version jumps, same as upstream chaiNNer
+
+**No open action items.**
+
+---
+
+## 2026-05-20 — Merge update/dependencies → main + bump to v0.25.3-multivid
+
+**Done:**
+- Merged `update/dependencies` into `main` (no-ff merge commit).
+- Bumped version to `0.25.3-multivid` (`package.json` + `package-lock.json`).
+
+**What this release contains over v0.25.2-multivid:**
+- All dependency updates (electron-forge 7.11.1, TypeScript 5.9.3, chakra-ui 2.10.9, react 18.3.1, vite 5.4.21, etc.)
+- GitHub Actions updated to `actions/checkout@v4` / `actions/setup-node@v4` (all 8 workflow files)
+- Compatibility fixes: patch-package removal, rregex pinned to 1.10.11, chakra sub-packages explicitly listed
+- `run-test.bat` now auto-pulls, installs with `--legacy-peer-deps`, and handles errors
+- 8 TypeScript 5.9 errors resolved in upstream files
+
+**Release attempt 1 failed:** all CI workflows use `npm ci` which doesn't accept the peer-dep conflict. Fixed by adding `--legacy-peer-deps` to every `npm ci` step across all 5 workflow files (`release.yml`, `release-test.yml`, `lint-frontend.yml`, `test-frontend.yml`, `make.yml`). Tag moved forward to include the fix.
+
+**Release succeeded.** All 3 platform builds passed (Windows, macOS universal, Linux). Draft published at:
+https://github.com/wyghst/chainner-multivid/releases/tag/v0.25.3-multivid
+
+Assets: `.exe`, `.dmg` (universal), `.deb`, `.rpm`, `.zip` (Linux + Windows).
+
+---
+
 ## 2026-05-20 — Fix TypeScript 5.9 errors (branch: update/dependencies)
 
 **All 8 upstream TypeScript errors resolved. `npm run type-check:js` passes clean.**

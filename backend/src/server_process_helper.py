@@ -295,7 +295,7 @@ class WorkerServer:
             "/sse",
             headers=request.headers,
             data=request.body,
-            timeout=aiohttp.ClientTimeout(total=60 * 60, connect=5),
+            timeout=aiohttp.ClientTimeout(total=None, connect=5),
         ) as resp:
             self._manually_close.add(resp)
             try:

@@ -94,9 +94,8 @@ backend/python/*
 # IDE nonsense
 .idea/
 
-# DATA_ROOT symlinks (bare names — a directory pattern doesn't match a symlink)
-tests/snip1.png
-tests/snip2.png
+# Project data — one symlink to the shared _dev-data root (see CLAUDE.md)
+/_dev-data
 
 
 ##############

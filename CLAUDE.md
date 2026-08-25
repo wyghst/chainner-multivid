@@ -69,6 +69,7 @@ Baseline verified: `npm install --legacy-peer-deps` + `npm run type-check:js` bo
   - `backend/src/packages/chaiNNer_standard/image_dimension/resize/resize_to_side.py` — added Force Even Dimensions option (input id=5)
   - `backend/src/amd.py` — AMD GPU detection (Windows); identifies ROCm-compatible cards, exports HIP SDK + ROCm PyTorch doc URLs
 - **DEVLOG.md:** Updated at the end of every working session (reverse-chronological)
+- **Project data:** non-source files (e.g. `tests/snip1.png`, `tests/snip2.png`) live outside the repo, reached through one gitignored symlink at the root: `_dev-data -> <your Nextcloud>/_dev-data/chainner-multivid` (a directory junction on Windows). It is the repo's only symlink; create it per machine.
 
 ## Tracking File Maintenance
 

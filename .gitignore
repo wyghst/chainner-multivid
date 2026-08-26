@@ -98,6 +98,9 @@ backend/python/*
 tests/snip1.png
 tests/snip2.png
 
+# Shared data root — the single per-machine junction/symlink into _dev-data
+/_dev-data
+
 
 ##############
 ### Python ###
